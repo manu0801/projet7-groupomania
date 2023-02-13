@@ -5,6 +5,12 @@ const sequelize = require("./index.js");
 class User extends Model {}
 
 User.init({
+    id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false

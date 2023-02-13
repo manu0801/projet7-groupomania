@@ -1,18 +1,33 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
+const { DataTypes, Model } = require('sequelize');
+const sequelize = require("./index.js");
 
-const sequelize = new Sequelize('sqlite::memory:');
 
 class Publication extends Model {}
+
 Publication.init({
-    publication: {
-        type: DataTypes.TEXT
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    publicationUrl: {
-        type: DataTypes.STRING
+    publication: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    imageUrl: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false
+    },
+    author_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false 
     }
+
 },
 {
     sequelize,
     modelName: "Publication",
-    tableName: 'publications'
+    tableName: 'publications',
+    timestamps: false
 });
+module.exports=Publication;

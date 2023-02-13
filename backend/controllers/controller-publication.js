@@ -3,12 +3,18 @@ const fs = require('fs');
 
 //controllers to create publication
 exports.createPublication = (req, res, next) => {
-    const publicationObject = JSON.parse(req.body.sauce);
-    delete publicationObject._id;
-    const publication = new Sauce({
-        ...publicationObject,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    
+    console.log(req.auth);
+    const publication = new Publication({
+        
+        author_id: req.auth.id,
+        imageUrl: req.body.imageUrl,
+        title: req.body.title,
+        publication: req.body.publication
+        // imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     });
+    console.log(publication);
+
     publication.save()
     .then(() => res.status(201).json({ message: 'publication enregistrée'}))
     .catch(error => res.status(400).json({ error }));

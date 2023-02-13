@@ -24,19 +24,21 @@ exports.signup = (req,res,next) => {
 
 //controllers to identify
 exports.login = (req, res, next) => {
-    user.findOne({ email: req.body.email})
+    User.findOne({ where: { email: req.body.email } })
     .then(user => {
         if(!user) {
             return res.status(401).json({ error: 'utilisateur non trouvé'});
         } 
+        
         bcrypt.compare(req.body.password, user.password)
             .then(valid =>{
                 if(!valid) {
                     return res.status(401).json({ error: 'mot de passe incorrect'});
                 }
+                console.log(user);
                 res.status(200).json({
-                    userId: user._id,
-                    token: jwt.sign({userId: user._id},
+                    userId: user.id,
+                    token: jwt.sign({userId: user.id},
                         'RANDOM_TOKEN_SECRET',
                         {expiresIn: '24h'}
                     )
@@ -60,7 +62,7 @@ exports.findOneUser = (req, res, next) => {
 //Controller to modify user
 exports.modifyUser =(req, res, next) => {
     const firstname = req.body.firstname;
-    const lastname = req.body.lastname;
+    const lastname = req.body.name;
 
     if(firstname === null || firstname === '' || lastname === null || lastname === '') {
         return res.statut(400).json({'error': "les champs 'nom' et 'prénom' doivent e^tre remplis"});
@@ -73,8 +75,8 @@ exports.modifyUser =(req, res, next) => {
     } : { ...req.body};
 
     User.update({ ...userObject, id: req.params.id}, { where: {id: req.params.id}})
-    .then(() => res.statut(200).json({ message: 'Utilisateur modifié !'}))
-    .catch(error => res.statut(400).json({error}));
+    .then(() => res.status(200).json({ message: 'Utilisateur modifié !'}))
+    .catch(error => res.status(400).json({error}));
 };
 
 
